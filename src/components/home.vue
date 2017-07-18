@@ -75,12 +75,12 @@ export default {
         }
     },
     created() {
-        this.$http.get('http://restapi.li1.home-trial.com/wp-json/wp/v2/posts?per_page=20').then(response => {
+        this.$http.get('https://restapi.li1.home-trial.com/wp-json/wp/v2/posts?per_page=20').then(response => {
             this.posts = response.body
         }, response => {
             // error callback
         })
-        this.$http.get('http://restapi.li1.home-trial.com/wp-json/wp/v2/categories').then(response => {
+        this.$http.get('https://restapi.li1.home-trial.com/wp-json/wp/v2/categories').then(response => {
             this.categories = response.body
         }, response => {
             // error callback
@@ -88,17 +88,12 @@ export default {
     },
     methods: {
         getThePost(id) {
-            // console.log('id', id)
             var posts = this.posts
             this.show = true
             function filterPosts(el) {
                 return el.id === id
             }
             this.post = posts.filter(filterPosts)
-            // return this.posts.filter((post) => {
-            //     console.log(post.title.rendered.match(this.nameFilter))
-            //     return post.title.rendered.match(this.nameFilter)
-            // })
         },
         filterVisibility() {
             if (this.filterActive) {
