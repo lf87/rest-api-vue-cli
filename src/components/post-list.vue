@@ -19,7 +19,7 @@
                         <label>All</label>
                     </div>
                     <div class="radio-wrap" v-for="category in categories" v-if="category.name != 'Uncategorised'">
-                        <input type="checkbox" v-bind:value="category.id" v-model="categoryFilter">
+                        <input type="radio" v-bind:value="category.id" v-model="categoryFilter">
                         <label>{{ category.name }}</label>
                     </div>
                 </div>
