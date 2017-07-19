@@ -65,16 +65,22 @@ export default {
     name: 'PostList',
     data() {
         return {
+            slug: 'posts',
             posts: [],
             post: '',
+            pages: [],
+            page: '',
             nameFilter: '',
             categoryFilter: '',
             categories: [],
             filterActive: false,
-            show: false
+            show: false,
+            title: 'Posts - WordPress Rest API Test Site',
+            description: 'Posts page for this Wordpress Restful API test site using VueJS'
         }
     },
     created() {
+        // this.updateSource(this.source)
         this.$http.get('https://restapi.li1.home-trial.com/wp-json/wp/v2/posts?per_page=20').then(response => {
             this.posts = response.body
         }, response => {
@@ -85,8 +91,51 @@ export default {
         }, response => {
             // error callback
         })
+        this.$http.get(`https://restapi.li1.home-trial.com/wp-json/wp/v2/pages?slug=$(posts)`).then(response => {
+            this.pages = response.body
+            // console.log(this.pages[0]._yoast_wpseo_metadesc[0])
+        }, response => {
+            // error callback
+        })
+    },
+    // metaInfo: () => ({
+    //     title: test.test,
+    //     titleTemplate: '%s | Vue Meta Examples',
+    //     htmlAttrs: {
+    //         lang: 'en',
+    //         amp: undefined
+    //     },
+    //     meta: [
+    //         { name: 'description', content: 'Hello', vmid: 'test' }
+    //     ],
+    //     script: [
+    //         { innerHTML: '{ "@context": "http://www.schema.org", "@type": "Organization" }', type: 'application/ld+json' }
+    //     ],
+    //     __dangerouslyDisableSanitizers: ['script']
+    // }),
+    // head: {
+    //     // To use "this" in the component, it is necessary to return the object through a function
+    //     title: function () {
+    //         return {
+    //             inner: this.title
+    //         }
+    //     },
+    //     meta: [
+    //         { name: 'description', content: 'asds', id: 'desc' }
+    //     ]
+    // },
+    metaInfo() {
+        return {
+            title: this.title,
+            meta: [
+                { name: 'description', content: this.description }
+            ]
+        }
     },
     methods: {
+        // updateSource(source) {
+
+        // },
         getThePost(id) {
             var posts = this.posts
             this.show = true
@@ -95,6 +144,14 @@ export default {
             }
             this.post = posts.filter(filterPosts)
         },
+        // getThePage(id) {
+        //     var pages = this.pages
+        //     this.show = true
+        //     function filterPages(el) {
+        //         return el.id === id
+        //     }
+        //     this.pages = pages.filter(filterPages)
+        // },
         filterVisibility() {
             if (this.filterActive) {
                 this.filterActive = false
@@ -107,14 +164,15 @@ export default {
         }
     },
     computed: {
-        filteredPosts: function () {
+        filteredPosts() {
             return this.posts.filter((post) => {
                 const toLower = new RegExp(this.nameFilter, 'i')
+                const rendered = post.title.rendered.match(toLower)
                 const postsInCats = post.categories.indexOf(this.categoryFilter) >= 0
                 if (postsInCats) {
-                    return post.title.rendered.match(toLower)
+                    return rendered
                 } else if (this.categoryFilter === '') {
-                    return post.title.rendered.match(toLower)
+                    return rendered
                 }
             })
         }
