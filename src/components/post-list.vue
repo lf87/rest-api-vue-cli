@@ -64,6 +64,7 @@
 export default {
     name: 'PostList',
     data() {
+        console.log('data')
         return {
             slug: 'posts',
             posts: [],
@@ -74,13 +75,11 @@ export default {
             categoryFilter: '',
             categories: [],
             filterActive: false,
-            show: false,
-            title: 'Posts - WordPress Rest API Test Site',
-            description: 'Posts page for this Wordpress Restful API test site using VueJS'
+            show: false
         }
     },
     created() {
-        // this.updateSource(this.source)
+        console.log('created')
         this.$http.get('https://restapi.li1.home-trial.com/wp-json/wp/v2/posts?per_page=20').then(response => {
             this.posts = response.body
         }, response => {
@@ -93,49 +92,13 @@ export default {
         })
         this.$http.get(`https://restapi.li1.home-trial.com/wp-json/wp/v2/pages?slug=$(posts)`).then(response => {
             this.pages = response.body
-            // console.log(this.pages[0]._yoast_wpseo_metadesc[0])
+            document.title = this.pages[0]._yoast_wpseo_title[0]
+            document.head.querySelector('meta[name=description]').content = this.pages[0]._yoast_wpseo_metadesc[0]
         }, response => {
             // error callback
         })
     },
-    // metaInfo: () => ({
-    //     title: test.test,
-    //     titleTemplate: '%s | Vue Meta Examples',
-    //     htmlAttrs: {
-    //         lang: 'en',
-    //         amp: undefined
-    //     },
-    //     meta: [
-    //         { name: 'description', content: 'Hello', vmid: 'test' }
-    //     ],
-    //     script: [
-    //         { innerHTML: '{ "@context": "http://www.schema.org", "@type": "Organization" }', type: 'application/ld+json' }
-    //     ],
-    //     __dangerouslyDisableSanitizers: ['script']
-    // }),
-    // head: {
-    //     // To use "this" in the component, it is necessary to return the object through a function
-    //     title: function () {
-    //         return {
-    //             inner: this.title
-    //         }
-    //     },
-    //     meta: [
-    //         { name: 'description', content: 'asds', id: 'desc' }
-    //     ]
-    // },
-    metaInfo() {
-        return {
-            title: this.title,
-            meta: [
-                { name: 'description', content: this.description }
-            ]
-        }
-    },
     methods: {
-        // updateSource(source) {
-
-        // },
         getThePost(id) {
             var posts = this.posts
             this.show = true
@@ -144,14 +107,6 @@ export default {
             }
             this.post = posts.filter(filterPosts)
         },
-        // getThePage(id) {
-        //     var pages = this.pages
-        //     this.show = true
-        //     function filterPages(el) {
-        //         return el.id === id
-        //     }
-        //     this.pages = pages.filter(filterPages)
-        // },
         filterVisibility() {
             if (this.filterActive) {
                 this.filterActive = false
